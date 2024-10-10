@@ -1,6 +1,6 @@
 import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { setCookie } from "../utils/setCookie.js";
 
 export const getAllUsers = async (req, res) => {
     const users = await User.find({});
@@ -16,13 +16,22 @@ export const login = async (req, res, next) => { }
 export const register = async (req, res) => {
     const { name, email, password } = req.body;
 
-    const isUserExist = await User.findOne({ email });
+    const isSameEmail = await User.findOne({ email });
+    const isSameName = await User.findOne({ name });
 
-    // --- if user already exists then return error
-    if (isUserExist) {
+    // --- if user email already exists then return error
+    if (isSameEmail) {
         return res.status(404).json({
             success: false,
-            message: "User already exists."
+            message: "email already exists."
+        })
+    }
+
+    // --- if user name already exists then return error
+    if (isSameName) {
+        return res.status(404).json({
+            success: false,
+            message: "username already exists."
         })
     }
 
@@ -37,25 +46,8 @@ export const register = async (req, res) => {
         }
     )
 
-    // --- we can redirect to login page if success is true or
-    // res.status(201).json({
-    //     success: true,
-    //     message: "User registered successfully."
-    // })
-
-    // --- if we want to login user automatically after registration then we can send cookie token here
-
-    // --- generating token here with jwt
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-
-    res.status(201).cookie("token", token, {
-        httpOnly: true,
-        maxAge: 15 * 60 * 1000, // 15 minutes
-
-    }).json({
-        success: true,
-        message: "User registered successfully."
-    })
+    // --- setting the cookie
+    setCookie(user, res, "User registered successfully.", 201);
 };
 
 export const getUserDetails = async (req, res) => { }
