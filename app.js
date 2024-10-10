@@ -10,8 +10,10 @@ config({
 });
 
 // --- using Middleware
-app.use(express.json());
-app.use("/users", userRouter);
+app.use(express.json()); // should be above the routes
+
+// --- using the routes
+app.use("/api/users", userRouter);
 
 app.get("/", (req, res) => {
     res.send("working fine.");
