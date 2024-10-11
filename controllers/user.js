@@ -11,27 +11,43 @@ export const getAllUsers = async (req, res) => {
     })
 }
 
-export const login = async (req, res, next) => { }
+export const login = async (req, res, next) => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email }).select("+password");
+    // as password is set to select: false in schema, so to access and use password from database, will have to use 'select("+password")'
+
+    // --- if user email does not exists then return error
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: "Invalid Email or Password."
+        })
+    }
+
+    // --- comparing the password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+        return res.status(404).json({
+            success: false,
+            message: "Invalid Email or Password."
+        })
+    }
+
+    setCookie(user, res, `Welcome ${user.name}`, 200);
+}
 
 export const register = async (req, res) => {
     const { name, email, password } = req.body;
 
-    const isSameEmail = await User.findOne({ email });
-    const isSameName = await User.findOne({ name });
+    const isUserExist = await User.findOne({ email });
 
     // --- if user email already exists then return error
-    if (isSameEmail) {
+    if (isUserExist) {
         return res.status(404).json({
             success: false,
             message: "email already exists."
-        })
-    }
-
-    // --- if user name already exists then return error
-    if (isSameName) {
-        return res.status(404).json({
-            success: false,
-            message: "username already exists."
         })
     }
 

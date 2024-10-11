@@ -13,8 +13,9 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
+        required: true,
         select: false,
-        required: true
+        // --- now by setting 'select: false' can't access password from database, then will have to use 'select("+password")'
     },
     createdAt: {
         type: Date,
