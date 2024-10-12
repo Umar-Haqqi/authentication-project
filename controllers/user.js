@@ -1,7 +1,6 @@
 import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
 import { setCookie } from "../utils/setCookie.js";
-import jwt from "jsonwebtoken";
 
 export const getAllUsers = async (req, res) => {
     const users = await User.find({});
@@ -67,32 +66,11 @@ export const register = async (req, res) => {
 };
 
 // --- to get current user data
-export const getMyProfile = async (req, res) => {
-    // --- with current user id we can get the user data
-    // const id = "myId";
-
-    // --- to get the current user id first check the user is logged in or not
-    // --- after setting cookieparser middleware in app.js, now we can get the current user id from the cookie, we can get set token from the req.cookies
-
-    const { token } = req.cookies;
-    // console.log(token, "token from getMyProfile");
-
-    if (!token) {
-        return res.status(404).json({
-            success: false,
-            message: "Please login first."
-        })
-    }
-
-    // --- now we can get the user id from the token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // console.log(decoded, "decoded");
-
-    const user = await User.findById(decoded._id);
-    // console.log(user, "user");
+export const getMyProfile = (req, res) => {
+    // --- user data is already saved in the request object in the auth middleware
 
     res.status(200).json({
         success: true,
-        user
+        user: req.user // --- in the auth middleware, we saved the user in the request object
     })
 }
