@@ -65,12 +65,20 @@ export const register = async (req, res) => {
     setCookie(user, res, "User registered successfully.", 201);
 };
 
-// --- to get current user data
 export const getMyProfile = (req, res) => {
     // --- user data is already saved in the request object in the auth middleware
 
     res.status(200).json({
         success: true,
         user: req.user // --- in the auth middleware, we saved the user in the request object
+    })
+}
+
+export const logout = (req, res) => {
+    res.status(200).cookie("token", "", {
+        expires: new Date(Date.now()),
+    }).json({
+        success: true,
+        message: "Logged out successfully."
     })
 }
