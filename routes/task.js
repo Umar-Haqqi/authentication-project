@@ -9,9 +9,6 @@ router.post("/new", isAuthenticated, newTask)
 router.get("/myTasks", isAuthenticated, getMyTasks)
 
 // --- to update and delete the task
-router
-    .route("/:id")
-    .put(isAuthenticated, updateTask)
-    .delete(isAuthenticated, deleteTask);
+router.route("/:id").put(isAuthenticated, updateTask).delete(isAuthenticated, deleteTask);
 
 export default router;
