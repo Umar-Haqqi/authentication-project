@@ -11,8 +11,8 @@ const taskSchema = new mongoose.Schema({
         required: true
     },
     user: {
-        type: mongoose.Schema.type.ObjectId, // userId in database
-        ref: User, // refernce collection name  (set model name)
+        type: mongoose.Schema.Types.ObjectId, // userId in database
+        ref: "User", // refernce collection name  (set model name)
         required: true
     },
     isCompleted: {
