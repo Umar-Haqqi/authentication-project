@@ -13,7 +13,13 @@ config({
     path: './config.env'
 });
 
-app.use(cors())
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+    // origin: 'http://localhost:3000',
+    // credentials: true,
+}))
 
 // --- using Middleware
 app.use(express.json()); // should be above the routes
