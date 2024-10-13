@@ -13,6 +13,8 @@ config({
     path: './config.env'
 });
 
+app.use(cors())
+
 // --- using Middleware
 app.use(express.json()); // should be above the routes
 app.use(cookieParser()); // to get current user data for getMyProfile route 
@@ -22,11 +24,7 @@ app.use("/api/users", userRouter);
 app.use("/api/tasks", taskRouter);
 
 // --- cors middleware
-app.use(cors({
-    origin: [process.env.CLIENT_URL],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
-}))
+
 
 app.get("/", (req, res) => {
     res.send("working fine.");
